@@ -1,0 +1,17 @@
+- name: Install ngnix and add user
+  hosts: http
+  gather_facts: yes
+  become: 'yes'
+
+  roles:
+    - users
+    - http
+
+- name: Install php and add user
+  hosts: php
+  gather_facts: yes
+  become: 'yes'
+
+  roles:
+    - users
+    - php

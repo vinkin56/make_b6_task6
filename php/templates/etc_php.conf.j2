@@ -1,0 +1,21 @@
+[www]
+listen = 192.168.10.7:9000
+chroot = /var/www
+chdir = /
+listen.allowed_clients = 192.168.10.19
+user = www-data
+group = www-data
+# как будут создаваться новые рабочие процессы
+pm = dynamic
+# максимальное оличество рабочих процессов
+pm.max_children = 10
+# число запущенных процессов при старте сервера
+pm.start_servers = 2
+# минимальное и максимальное количество процессов в простое
+pm.min_spare_servers = 1
+pm.max_spare_servers = 3
+slowlog = /var/log/php-fpm/www-slow.log
+php_admin_value[error_log] = /var/log/php-fpm/www-error.log
+php_admin_flag[log_errors] = on
+php_value[session.save_handler] = files
+php_value[session.save_path] = /var/lib/php/session

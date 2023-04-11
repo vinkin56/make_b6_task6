@@ -1,0 +1,19 @@
+---
+# tasks file for users
+- name: Add group www-data
+  group:
+    name: www-data
+    state: present
+
+- name: Add user
+  user:
+    force: true
+    name: "{{name_user}}"
+    groups: www-data
+    create_home: true
+    
+- name: insert authorized key
+  ansible.posix.authorized_key:
+    user: "{{name_user}}"
+    state: present
+    key: '{{ lookup(''file'', ''/home/sorokinav/.ssh/vinkin.pub'') }}'

@@ -1,0 +1,59 @@
+---
+# tasks file for php
+- name: Add repo
+  yum:
+    name: epel-release
+    state: present
+
+- name: Insert hostname
+  shell: hostnamectl set-hostname httpserver
+  become: true
+
+- name: Add user www-data
+  user:
+    force: true
+    name: www-data
+    groups: www-data
+    create_home: true
+
+- name: Install php-fpm
+  yum: name={{ item }} state=latest
+  with_items:
+      - php-fpm 
+      - php-cli 
+      - php-mysql 
+      - php-gd 
+      - php-ldap 
+      - php-odbc 
+      - php-pdo 
+      - php-pecl-memcache 
+      - php-pear 
+      - php-xml 
+      - php-xmlrpc 
+      - php-mbstring 
+      - php-snmp 
+      - php-soap
+      - phpmyadmin
+
+
+- name: Insert php-fpm in systemctl
+  shell: ln -f -s '/usr/lib/systemd/system/php-fpm.service' '/etc/systemd/system/multi-user.target.wants/php-fpm.service'
+  become: true
+
+- name: Create directory for phpmyadmin
+  file: dest={{document_root}}/pma.{{server_name}}/www state=directory
+
+- name: copy default files for phpmyadmin
+  shell: cp -R /usr/share/phpMyAdmin/* {{document_root}}/pma.{{server_name}}/www
+
+- name: Install configuration file
+  template:
+    src:   etc_php.conf.j2
+    dest: /etc/php-fpm.conf
+    mode: '0600'
+
+- name: Start php-fpm
+  service:
+    name: php-fpm.service
+    state: started
+    enabled: yes

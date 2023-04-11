@@ -1,0 +1,4 @@
+---
+# vars file for php
+server_name: "{{ ansible_fqdn }}"
+document_root: /var/WWW
